@@ -2,7 +2,7 @@ import os
 import time
 import random
 import smtplib
-import urllib.parse
+import re
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -182,22 +182,26 @@ if not response:
 conteudo_html = response.text.replace("```html", "").replace("```", "").strip()
 
 # ==============================================================================
-# 4. DISPARO DE E-MAIL PARA PUBLICAR NO BLOGGER
+# 4. DISPARO DE E-MAIL OTIMIZADO PARA O BLOGGER
 # ==============================================================================
-msg = MIMEMultipart()
+msg = MIMEMultipart('alternative')
 msg['From'] = GMAIL_USER
 msg['To'] = BLOGGER_EMAIL
 msg['Subject'] = f"Achados para Casa: {PRODUTO_NOME}"
 
-msg.attach(MIMEText(conteudo_html, 'html'))
+# Versão texto plano limpa (fallback para o Blogger processar perfeitamente)
+texto_limpo = re.sub('<[^<]+?>', '', conteudo_html)
 
-print(f">>> Enviando e-mail de publicação para {BLOGGER_EMAIL}...", flush=True)
+msg.attach(MIMEText(texto_limpo, 'plain', 'utf-8'))
+msg.attach(MIMEText(conteudo_html, 'html', 'utf-8'))
+
+print(f">>> Enviando e-mail formatado para publicação no Blogger ({BLOGGER_EMAIL})...", flush=True)
 try:
     server = smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=30)
     server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
     server.sendmail(GMAIL_USER, BLOGGER_EMAIL, msg.as_string())
     server.close()
-    print(f">>> SUCESSO! Post de Casa '{PRODUTO_NOME}' enviado para publicação!", flush=True)
+    print(f">>> SUCESSO! Post enviado para o Blogger!", flush=True)
 except Exception as e:
     print(f">>> ERRO ao enviar e-mail: {e}", flush=True)
     raise e
