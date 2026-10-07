@@ -3,10 +3,11 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import random
+import sys
 
 # Configurações de Email (Publish by Email do Blogger)
 SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 587
+SMTP_PORT = 465  # Alterado para 465 (SSL direto, muito mais estável)
 EMAIL_USER = os.environ.get("BLOG_EMAIL_USER")
 EMAIL_PASS = os.environ.get("BLOG_EMAIL_PASS")
 BLOGGER_EMAIL = os.environ.get("BLOGGER_PUBLISH_EMAIL")
@@ -15,7 +16,7 @@ BLOGGER_EMAIL = os.environ.get("BLOGGER_PUBLISH_EMAIL")
 PRODUCTS = [
     {
         "name": "Luminária De Mesa Cabeceira Touch",
-        "link": "https://vt.tiktok.com/...", # Substitua pelo link exato se necessário
+        "link": "https://vt.tiktok.com/...", 
         "image": "https://p16-oec-va.ibyteimg.com/tos-maliva-i-o3syd03w52-us/c5520bca5460470989f3c10b38a8b820~tplv-o3syd03w52-resize-webp:800:800.webp?dr=15584&t=555f072d&ps=933b5bde&shp=c940a200&shcp=9b759fb9&idc=my2&from=3376456192"
     },
     {
@@ -81,14 +82,15 @@ def send_to_blogger():
     msg.attach(MIMEText(html_content, 'html'))
     
     try:
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.starttls()
+        # Usando SMTP_SSL direto na porta 465
+        server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
         server.login(EMAIL_USER, EMAIL_PASS)
         server.sendmail(EMAIL_USER, BLOGGER_EMAIL, msg.as_string())
         server.quit()
         print(f"Post publicado com sucesso: {title}")
     except Exception as e:
         print(f"Erro ao publicar: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     send_to_blogger()
