@@ -23,13 +23,13 @@ print(">>> Configurando API do Gemini...", flush=True)
 genai.configure(api_key=GEMINI_API_KEY)
 
 # ==============================================================================
-# 2. CATÁLOGO REAL DE PRODUTOS DE CASA, COZINHA E ORGANIZAÇÃO
+# 2. CATÁLOGO REAL DE PRODUTOS (COM IMAGENS 100% COERENTES)
 # ==============================================================================
 PRODUTOS = [
     {
         "nome": "Kit Panos Multiuso Microfibra Gigante 60x80 Limpa Tudo Super Absorvente",
         "link": "https://vt.tiktok.com/ZS9DVa3EApja1-nfVbk/",
-        "imagem_url": "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Mini Ar Condicionado Climatizador Umidificador Ventilador Água Com LED Portátil",
@@ -49,17 +49,17 @@ PRODUTOS = [
     {
         "nome": "Escova de Limpeza Elétrica Ajustável para Janela, Banheiro e Cozinha 9 em 1 Recarregável",
         "link": "https://vt.tiktok.com/ZS9DVmJW3UMxg-1X2J5/",
-        "imagem_url": "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Jogo Toalha de Banho Super Luxo 4Pçs 100% Algodão Alta Absorção",
         "link": "https://vt.tiktok.com/ZS9DVme6ftpPw-mv1pz/",
-        "imagem_url": "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Kit até 30 Marmitas Potes 800ml com Travas Laterais Colorido BPA FREE",
         "link": "https://vt.tiktok.com/ZS9DVmNxuKAVr-oyWt7/",
-        "imagem_url": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Mop Giratório 14 Litros Esfregão 360 Balde Inox com Cabo Ajustável",
@@ -79,7 +79,7 @@ PRODUTOS = [
     {
         "nome": "Cortador de Legumes 16 em 1 Multifuncional com 8 Lâminas Ajustáveis",
         "link": "https://vt.tiktok.com/ZS9DVmMhpQGtP-U7HVG/",
-        "imagem_url": "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1590779035900-3ef5e9f5b35c?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Escova de Limpeza Elétrica Ajustável 9 em 1 Recarregável (Versão 2)",
@@ -109,21 +109,17 @@ PRODUTOS = [
 ]
 
 # ==============================================================================
-# 2.1 LÓGICA DE ROTAÇÃO DIÁRIA
+# 2.1 ROTAÇÃO BASEADA NO NÚMERO DE EXECUÇÃO DO GITHUB
 # ==============================================================================
-agora = datetime.now()
-dia_do_ano = agora.timetuple().tm_yday
-hora_servidor = agora.hour
-
-turno = 0 if hora_servidor < 15 else 1
-indice_produto = ((dia_do_ano * 2) + turno) % len(PRODUTOS)
+run_number = int(os.environ.get("GITHUB_RUN_NUMBER", random.randint(1, 1000)))
+indice_produto = (run_number - 1) % len(PRODUTOS)
 produto_do_dia = PRODUTOS[indice_produto]
 
 PRODUTO_NOME = produto_do_dia["nome"]
 TIKTOK_SHOP_LINK = produto_do_dia["link"]
 URL_IMAGEM_ILUSTRATIVA = produto_do_dia["imagem_url"]
 
-print(f">>> Produto do dia: {PRODUTO_NOME}", flush=True)
+print(f">>> Execução #{run_number} | Produto selecionado: {PRODUTO_NOME}", flush=True)
 print(f">>> Link Afiliado: {TIKTOK_SHOP_LINK}", flush=True)
 
 # ==============================================================================
@@ -189,7 +185,6 @@ msg['From'] = GMAIL_USER
 msg['To'] = BLOGGER_EMAIL
 msg['Subject'] = f"Achados para Casa: {PRODUTO_NOME}"
 
-# Versão texto plano limpa (fallback para o Blogger processar perfeitamente)
 texto_limpo = re.sub('<[^<]+?>', '', conteudo_html)
 
 msg.attach(MIMEText(texto_limpo, 'plain', 'utf-8'))
