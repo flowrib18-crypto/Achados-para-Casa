@@ -23,83 +23,88 @@ print(">>> Configurando API do Gemini...", flush=True)
 genai.configure(api_key=GEMINI_API_KEY)
 
 # ==============================================================================
-# 2. CATÁLOGO DE PRODUTOS DE CASA, COZINHA E ORGANIZAÇÃO
+# 2. CATÁLOGO REAL DE PRODUTOS DE CASA, COZINHA E ORGANIZAÇÃO
 # ==============================================================================
 PRODUTOS = [
     {
-        "nome": "Mini Processador Elétrico Moedor de Alimentos USB",
-        "link": "https://vt.tiktok.com/exemplomultiuso1/",
-        "kw_imagem": "mini food processor kitchen"
+        "nome": "Kit Panos Multiuso Microfibra Gigante 60x80 Limpa Tudo Super Absorvente",
+        "link": "https://vt.tiktok.com/ZS9DVa3EApja1-nfVbk/",
+        "imagem_url": "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?auto=format&fit=crop&w=800&q=80"
     },
     {
-        "nome": "Mop Spray com Reservatório e Pano de Microfibra",
-        "link": "https://vt.tiktok.com/exemplomultiuso2/",
-        "kw_imagem": "spray mop floor cleaning"
+        "nome": "Mini Ar Condicionado Climatizador Umidificador Ventilador Água Com LED Portátil",
+        "link": "https://vt.tiktok.com/ZS9DVaKJ1umxE-UHx9W/",
+        "imagem_url": "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80"
     },
     {
-        "nome": "Organizador de Geladeira acrílico transparente multiuso",
-        "link": "https://vt.tiktok.com/exemplomultiuso3/",
-        "kw_imagem": "fridge organizer clear bins"
+        "nome": "Escorredor de Louças Pratos 13 Pratos 2 Andares com Porta Talher Modelo Premium",
+        "link": "https://vt.tiktok.com/ZS9DVaKwB15qr-TEaTI/",
+        "imagem_url": "https://images.unsplash.com/photo-1588854337236-6889d631faa8?auto=format&fit=crop&w=800&q=80"
     },
     {
-        "nome": "Escorredor de Pratos Rolante de Inox para Pia",
-        "link": "https://vt.tiktok.com/exemplomultiuso4/",
-        "kw_imagem": "roll up dish drying rack"
+        "nome": "Câmera Lâmpada Wi-Fi IP Inteligente 8177QJ Branca Segurança 1080p Full HD Pix-Link",
+        "link": "https://vt.tiktok.com/ZS9DVmeakMLJH-8DAf9/",
+        "imagem_url": "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=800&q=80"
     },
     {
-        "nome": "Mini Seladora de Embalagens a Vácuo portátil",
-        "link": "https://vt.tiktok.com/exemplomultiuso5/",
-        "kw_imagem": "mini bag sealer plastic"
+        "nome": "Escova de Limpeza Elétrica Ajustável para Janela, Banheiro e Cozinha 9 em 1 Recarregável",
+        "link": "https://vt.tiktok.com/ZS9DVmJW3UMxg-1X2J5/",
+        "imagem_url": "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?auto=format&fit=crop&w=800&q=80"
     },
     {
-        "nome": "Descascador e Fatiador de Legumes Giratório 3 em 1",
-        "link": "https://vt.tiktok.com/exemplomultiuso6/",
-        "kw_imagem": "vegetable peeler slicer"
+        "nome": "Jogo Toalha de Banho Super Luxo 4Pçs 100% Algodão Alta Absorção",
+        "link": "https://vt.tiktok.com/ZS9DVme6ftpPw-mv1pz/",
+        "imagem_url": "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80"
     },
     {
-        "nome": "Suporte Adesivo Multiuso para Vassouras e Rodos de Parede",
-        "link": "https://vt.tiktok.com/exemplomultiuso7/",
-        "kw_imagem": "mop broom wall holder"
+        "nome": "Kit até 30 Marmitas Potes 800ml com Travas Laterais Colorido BPA FREE",
+        "link": "https://vt.tiktok.com/ZS9DVmNxuKAVr-oyWt7/",
+        "imagem_url": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80"
     },
     {
-        "nome": "Fita Dupla Face Nano Gel Transparente Lavável Fixação Forte",
-        "link": "https://vt.tiktok.com/exemplomultiuso8/",
-        "kw_imagem": "nano tape double sided"
+        "nome": "Mop Giratório 14 Litros Esfregão 360 Balde Inox com Cabo Ajustável",
+        "link": "https://vt.tiktok.com/ZS9DVmFYNCQMH-LghoN/",
+        "imagem_url": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80"
     },
     {
-        "nome": "Varal de Chão Dobrável com Abas em Aço",
-        "link": "https://vt.tiktok.com/exemplomultiuso9/",
-        "kw_imagem": "folding clothes drying rack"
+        "nome": "Varal de Chão 3 Andares Dobrável com Abas para Roupas",
+        "link": "https://vt.tiktok.com/ZS9DVm2Jj9628-F23ko/",
+        "imagem_url": "https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?auto=format&fit=crop&w=800&q=80"
     },
     {
-        "nome": "Dispenser para Detergente com Suporte de Esponja 2 em 1",
-        "link": "https://vt.tiktok.com/exemplomultiuso10/",
-        "kw_imagem": "soap dispenser sponge holder"
+        "nome": "Travesseiro Cervical Ortopédico Confortável Alivia Dores na Coluna",
+        "link": "https://vt.tiktok.com/ZS9DVmjhnuqCH-wfiUR/",
+        "imagem_url": "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=800&q=80"
     },
     {
-        "nome": "Tapete Antiderrapante para Pia e Banheiro em PVC",
-        "link": "https://vt.tiktok.com/exemplomultiuso11/",
-        "kw_imagem": "non slip bath mat"
+        "nome": "Cortador de Legumes 16 em 1 Multifuncional com 8 Lâminas Ajustáveis",
+        "link": "https://vt.tiktok.com/ZS9DVmMhpQGtP-U7HVG/",
+        "imagem_url": "https://images.unsplash.com/photo-1590779035900-3ef5e9f5b35c?auto=format&fit=crop&w=800&q=80"
     },
     {
-        "nome": "Lixeira de Pia com Tampa Basculante Compacta",
-        "link": "https://vt.tiktok.com/exemplomultiuso12/",
-        "kw_imagem": "small kitchen trash can"
+        "nome": "Escova de Limpeza Elétrica Ajustável 9 em 1 Recarregável (Versão 2)",
+        "link": "https://vt.tiktok.com/ZS9DVmMjTUVNU-vGBkP/",
+        "imagem_url": "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?auto=format&fit=crop&w=800&q=80"
     },
     {
-        "nome": "Organizador de Armário Suspenso para Prateleira",
-        "link": "https://vt.tiktok.com/exemplomultiuso13/",
-        "kw_imagem": "hanging cabinet organizer"
+        "nome": "Protetor de Colchão Casal com Manta Impermeável Ultrassônico e Elástico",
+        "link": "https://vt.tiktok.com/ZS9DVmBAFxN8R-K7mOX/",
+        "imagem_url": "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80"
     },
     {
-        "nome": "Garrafa Squeeze Motivacional com Marcador de Tempo 2L",
-        "link": "https://vt.tiktok.com/exemplomultiuso14/",
-        "kw_imagem": "motivation water bottle"
+        "nome": "Percarbonato de Sódio 100% Puro Ativo Auto Flocante Tira Manchas Roupas Brancas",
+        "link": "https://vt.tiktok.com/ZS9DVmBWeeENt-CC5PO/",
+        "imagem_url": "https://images.unsplash.com/photo-1585670149079-5c74eff05b4b?auto=format&fit=crop&w=800&q=80"
     },
     {
-        "nome": "Escova de Limpeza Elétrica Sem Fio com Cabeças Trocáveis",
-        "link": "https://vt.tiktok.com/exemplomultiuso15/",
-        "kw_imagem": "electric cleaning brush scrub"
+        "nome": "Kit 5 Lençóis QUEEN Estampados Avulsos com Elástico",
+        "link": "https://vt.tiktok.com/ZS9DVmSaMgcv9-PZJbS/",
+        "imagem_url": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+        "nome": "Coberdrom Casal Queen Size Sherpa Cobertor Edredom de Inverno Pele de Carneiro",
+        "link": "https://vt.tiktok.com/ZS9DVmPhvUArW-DxBkv/",
+        "imagem_url": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80"
     }
 ]
 
@@ -111,14 +116,12 @@ dia_do_ano = agora.timetuple().tm_yday
 hora_servidor = agora.hour
 
 turno = 0 if hora_servidor < 15 else 1
-indice_produto = ((dia_do_ano * 2) + turno) % len(PRODUTO if 'PRODUTO' in locals() else PRODUTOS)
+indice_produto = ((dia_do_ano * 2) + turno) % len(PRODUTOS)
 produto_do_dia = PRODUTOS[indice_produto]
 
 PRODUTO_NOME = produto_do_dia["nome"]
 TIKTOK_SHOP_LINK = produto_do_dia["link"]
-KW_IMAGEM = urllib.parse.quote(produto_do_dia.get("kw_imagem", "home organization kitchen"))
-
-URL_IMAGEM_ILUSTRATIVA = f"https://loremflickr.com/800/500/{KW_IMAGEM}"
+URL_IMAGEM_ILUSTRATIVA = produto_do_dia["imagem_url"]
 
 print(f">>> Produto do dia: {PRODUTO_NOME}", flush=True)
 print(f">>> Link Afiliado: {TIKTOK_SHOP_LINK}", flush=True)
@@ -131,7 +134,7 @@ Crie um artigo completo de review para blog de achados de casa, cozinha e organi
 
 Instruções obrigatórias de estrutura HTML:
 1. Título principal chamativo em <h1> focado em praticidade para o lar, otimização de espaço e facilidade no dia a dia.
-2. Logo após o <h1>, insira a seguinte imagem:
+2. Logo após o <h1>, insira obrigatoriamente a seguinte tag de imagem HTML com estilo centralizado e limpo:
    <div style="text-align: center; margin: 20px 0;">
      <img src="{URL_IMAGEM_ILUSTRATIVA}" alt="{PRODUTO_NOME}" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" />
      <p style="font-size: 12px; color: #777777; margin-top: 6px; font-style: italic;">* Imagem meramente ilustrativa. Confira a foto e detalhes exatos do produto na página oficial do vendedor.</p>
@@ -139,7 +142,7 @@ Instruções obrigatórias de estrutura HTML:
 3. Introdução envolvente sobre como transformar a rotina doméstica e manter a casa organizada sem esforço.
 4. Seção 'Principais Benefícios e Praticidade no Dia a Dia' em lista <ul> com itens <li>.
 5. Seção 'Por Que Este Achadinho Está a Fazer Sucesso'.
-6. No final do artigo, insira o botão CTA HTML:
+6. No final do artigo, insira o botão CTA HTML com o link de afiliado oficial:
    <div style="text-align: center; margin: 35px 0;">
      <a href="{TIKTOK_SHOP_LINK}" target="_blank" rel="sponsored nofollow" style="background-color: #ff0050; color: white; padding: 16px 32px; font-size: 18px; font-weight: bold; text-decoration: none; border-radius: 8px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
        👉 VER OFERTA E COMPRAR NO TIKTOK SHOP
@@ -170,7 +173,7 @@ for nome_modelo in modelos_disponiveis:
         print(f">>> Sucesso com o modelo: {nome_modelo}!", flush=True)
         break
     except Exception as e:
-        print(f">>> Modelo {nome_modelo} falhou ({e}). Tentando o próximo modelo...", flush=True)
+        print(f">>> Modelo {nome_modelo} falhou ({e}). Tentando o próximo modelo...", flush=Thread if 'Thread' in globals() else str(e)), flush=True)
         time.sleep(5)
 
 if not response:
