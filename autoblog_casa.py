@@ -5,14 +5,22 @@ from email.mime.text import MIMEText
 import random
 import sys
 
-# Configurações de Email (SMTP Profissional do Brevo)
+# Configurações de Email (Brevo SMTP)
 SMTP_SERVER = "smtp-relay.brevo.com"
 SMTP_PORT = 465
 EMAIL_USER = os.environ.get("BLOG_EMAIL_USER")
 EMAIL_PASS = os.environ.get("BLOG_EMAIL_PASS")
 BLOGGER_EMAIL = os.environ.get("BLOGGER_PUBLISH_EMAIL")
 
-# Catálogo Atualizado - Nicho: Casa, Cozinha e Organização
+# Validação prévia dos segredos do GitHub
+if not EMAIL_USER or not EMAIL_PASS or not BLOGGER_EMAIL:
+    print("❌ ERRO: Segredos do GitHub em falta!")
+    print(f"   - BLOG_EMAIL_USER: {'OK' if EMAIL_USER else 'FALTANDO'}")
+    print(f"   - BLOG_EMAIL_PASS: {'OK' if EMAIL_PASS else 'FALTANDO'}")
+    print(f"   - BLOGGER_PUBLISH_EMAIL: {'OK' if BLOGGER_EMAIL else 'FALTANDO'}")
+    sys.exit(1)
+
+# Catálogo Completo - Nicho: Casa, Cozinha e Organização (7 Produtos)
 PRODUCTS = [
     {
         "name": "Luminária De Mesa Cabeceira Touch",
@@ -53,7 +61,6 @@ PRODUCTS = [
 
 def generate_post_content(product):
     title = f"Review e Oferta: {product['name']}"
-    
     html_content = f"""
     <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
         <h2>{product['name']}</h2>
@@ -78,7 +85,6 @@ def send_to_blogger():
     msg['From'] = EMAIL_USER
     msg['To'] = BLOGGER_EMAIL
     msg['Subject'] = title
-    
     msg.attach(MIMEText(html_content, 'html'))
     
     try:
