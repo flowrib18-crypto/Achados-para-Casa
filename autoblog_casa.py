@@ -5,9 +5,9 @@ from email.mime.text import MIMEText
 import random
 import sys
 
-# Configurações de Email (Publish by Email do Blogger)
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 465  # Alterado para 465 (SSL direto, muito mais estável)
+# Configurações de Email (SMTP Profissional do Brevo)
+SMTP_SERVER = "smtp-relay.brevo.com"
+SMTP_PORT = 465
 EMAIL_USER = os.environ.get("BLOG_EMAIL_USER")
 EMAIL_PASS = os.environ.get("BLOG_EMAIL_PASS")
 BLOGGER_EMAIL = os.environ.get("BLOGGER_PUBLISH_EMAIL")
@@ -82,7 +82,6 @@ def send_to_blogger():
     msg.attach(MIMEText(html_content, 'html'))
     
     try:
-        # Usando SMTP_SSL direto na porta 465
         server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
         server.login(EMAIL_USER, EMAIL_PASS)
         server.sendmail(EMAIL_USER, BLOGGER_EMAIL, msg.as_string())
