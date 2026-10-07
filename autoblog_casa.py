@@ -1,202 +1,94 @@
 import os
-import time
-import random
 import smtplib
-import re
-from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import google.generativeai as genai
+import random
 
-# ==============================================================================
-# 1. CONFIGURAÇÃO DE SEGREDOS
-# ==============================================================================
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-GMAIL_USER = os.environ.get("GMAIL_USER")
-GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD", "").replace(" ", "")
-BLOGGER_EMAIL = os.environ.get("BLOGGER_EMAIL")
+# Configurações de Email (Publish by Email do Blogger)
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
+EMAIL_USER = os.environ.get("BLOG_EMAIL_USER")
+EMAIL_PASS = os.environ.get("BLOG_EMAIL_PASS")
+BLOGGER_EMAIL = os.environ.get("BLOGGER_PUBLISH_EMAIL")
 
-if not GEMINI_API_KEY:
-    raise ValueError("ERRO: GEMINI_API_KEY não foi encontrada nas variáveis de ambiente.")
-
-print(">>> Configurando API do Gemini...", flush=True)
-genai.configure(api_key=GEMINI_API_KEY)
-
-# ==============================================================================
-# 2. CATÁLOGO REAL DE PRODUTOS (COM IMAGENS 100% COERENTES)
-# ==============================================================================
-PRODUTOS = [
+# Catálogo Atualizado - Nicho: Casa, Cozinha e Organização
+PRODUCTS = [
     {
-        "nome": "Kit Panos Multiuso Microfibra Gigante 60x80 Limpa Tudo Super Absorvente",
-        "link": "https://vt.tiktok.com/ZS9DVa3EApja1-nfVbk/",
-        "imagem_url": "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?auto=format&fit=crop&w=800&q=80"
+        "name": "Luminária De Mesa Cabeceira Touch",
+        "link": "https://vt.tiktok.com/...", # Substitua pelo link exato se necessário
+        "image": "https://p16-oec-va.ibyteimg.com/tos-maliva-i-o3syd03w52-us/c5520bca5460470989f3c10b38a8b820~tplv-o3syd03w52-resize-webp:800:800.webp?dr=15584&t=555f072d&ps=933b5bde&shp=c940a200&shcp=9b759fb9&idc=my2&from=3376456192"
     },
     {
-        "nome": "Mini Ar Condicionado Climatizador Umidificador Ventilador Água Com LED Portátil",
-        "link": "https://vt.tiktok.com/ZS9DVaKJ1umxE-UHx9W/",
-        "imagem_url": "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80"
+        "name": "Lençol Com Babado Helena 3 Peças 400 Fios Toque de Algodão",
+        "link": "https://vt.tiktok.com/ZS9DV5KvJfUY6-87jXx/",
+        "image": "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/e80c2735205f48908a13bee29309f6b0~tplv-aphluv4xwc-resize-webp:800:800.webp?dr=15582&t=555f072d&ps=933b5bde&shp=c940a200&shcp=9b759fb9&idc=my2&from=3376456192"
     },
     {
-        "nome": "Escorredor de Louças Pratos 13 Pratos 2 Andares com Porta Talher Modelo Premium",
-        "link": "https://vt.tiktok.com/ZS9DVaKwB15qr-TEaTI/",
-        "imagem_url": "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80"
+        "name": "Colcha Lençol Casal Queen Helena 3 Peças Com Bababo Luxo Conforto Live",
+        "link": "https://vt.tiktok.com/ZS9DVaJFXMusA-y6nOC/",
+        "image": "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/a20c88283bac41c08e9f38c714423dc5~tplv-aphluv4xwc-resize-webp:800:800.webp?dr=15582&t=555f072d&ps=933b5bde&shp=c940a200&shcp=9b759fb9&idc=my2&from=3376456192"
     },
     {
-        "nome": "Câmera Lâmpada Wi-Fi IP Inteligente 8177QJ Branca Segurança 1080p Full HD Pix-Link",
-        "link": "https://vt.tiktok.com/ZS9DVmeakMLJH-8DAf9/",
-        "imagem_url": "https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=800&q=80"
+        "name": "Kit Jogo de Lençol Micropercal Tecido 400 Fios Lindas Fronhas Estampadas Com Zíper",
+        "link": "https://vt.tiktok.com/ZS9DVaeAceBA8-r2PBP/",
+        "image": "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/0dfc825bb0984a4cb765eb15611d5794~tplv-aphluv4xwc-resize-webp:800:800.webp?dr=15582&t=555f072d&ps=933b5bde&shp=c940a200&shcp=9b759fb9&idc=my2&from=3376456192"
     },
     {
-        "nome": "Escova de Limpeza Elétrica Ajustável para Janela, Banheiro e Cozinha 9 em 1 Recarregável",
-        "link": "https://vt.tiktok.com/ZS9DVmJW3UMxg-1X2J5/",
-        "imagem_url": "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?auto=format&fit=crop&w=800&q=80"
+        "name": "Lençol + 2 Fronhas Casal|Queen|King e Solteiro +1 Fronha",
+        "link": "https://vt.tiktok.com/ZS9DVaR4Rjmnf-V8eOj/",
+        "image": "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/6f56e9f9d90942068cd0340eb164612b~tplv-aphluv4xwc-resize-webp:800:800.webp?dr=15582&t=555f072d&ps=933b5bde&shp=c940a200&shcp=9b759fb9&idc=my2&from=3376456192"
     },
     {
-        "nome": "Jogo Toalha de Banho Super Luxo 4Pçs 100% Algodão Alta Absorção",
-        "link": "https://vt.tiktok.com/ZS9DVme6ftpPw-mv1pz/",
-        "imagem_url": "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80"
+        "name": "Torneira Cozinha Parede Preta Flexível Duplo Jato Cone 1/4 de Volta para Mesa Pia Bancada e Mármore",
+        "link": "https://vt.tiktok.com/ZS9DVaNWaY39r-rmWt5/",
+        "image": "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/8f8e03dd9f1147c0a33ac4e6e4d098a1~tplv-aphluv4xwc-resize-webp:800:800.webp?dr=15582&t=555f072d&ps=933b5bde&shp=c940a200&shcp=9b759fb9&idc=my2&from=3376456192"
     },
     {
-        "nome": "Kit até 30 Marmitas Potes 800ml com Travas Laterais Colorido BPA FREE",
-        "link": "https://vt.tiktok.com/ZS9DVmNxuKAVr-oyWt7/",
-        "imagem_url": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80"
-    },
-    {
-        "nome": "Mop Giratório 14 Litros Esfregão 360 Balde Inox com Cabo Ajustável",
-        "link": "https://vt.tiktok.com/ZS9DVmFYNCQMH-LghoN/",
-        "imagem_url": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80"
-    },
-    {
-        "nome": "Varal de Chão 3 Andares Dobrável com Abas para Roupas",
-        "link": "https://vt.tiktok.com/ZS9DVm2Jj9628-F23ko/",
-        "imagem_url": "https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?auto=format&fit=crop&w=800&q=80"
-    },
-    {
-        "nome": "Travesseiro Cervical Ortopédico Confortável Alivia Dores na Coluna",
-        "link": "https://vt.tiktok.com/ZS9DVmjhnuqCH-wfiUR/",
-        "imagem_url": "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=800&q=80"
-    },
-    {
-        "nome": "Cortador de Legumes 16 em 1 Multifuncional com 8 Lâminas Ajustáveis",
-        "link": "https://vt.tiktok.com/ZS9DVmMhpQGtP-U7HVG/",
-        "imagem_url": "https://images.unsplash.com/photo-1590779035900-3ef5e9f5b35c?auto=format&fit=crop&w=800&q=80"
-    },
-    {
-        "nome": "Escova de Limpeza Elétrica Ajustável 9 em 1 Recarregável (Versão 2)",
-        "link": "https://vt.tiktok.com/ZS9DVmMjTUVNU-vGBkP/",
-        "imagem_url": "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?auto=format&fit=crop&w=800&q=80"
-    },
-    {
-        "nome": "Protetor de Colchão Casal com Manta Impermeável Ultrassônico e Elástico",
-        "link": "https://vt.tiktok.com/ZS9DVmBAFxN8R-K7mOX/",
-        "imagem_url": "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80"
-    },
-    {
-        "nome": "Percarbonato de Sódio 100% Puro Ativo Auto Flocante Tira Manchas Roupas Brancas",
-        "link": "https://vt.tiktok.com/ZS9DVmBWeeENt-CC5PO/",
-        "imagem_url": "https://images.unsplash.com/photo-1585670149079-5c74eff05b4b?auto=format&fit=crop&w=800&q=80"
-    },
-    {
-        "nome": "Kit 5 Lençóis QUEEN Estampados Avulsos com Elástico",
-        "link": "https://vt.tiktok.com/ZS9DVmSaMgcv9-PZJbS/",
-        "imagem_url": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80"
-    },
-    {
-        "nome": "Coberdrom Casal Queen Size Sherpa Cobertor Edredom de Inverno Pele de Carneiro",
-        "link": "https://vt.tiktok.com/ZS9DVmPhvUArW-DxBkv/",
-        "imagem_url": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80"
+        "name": "Kit 2 Travesseiros Premium Soft 50x70cm Alto e Firme Antialérgico Conforto Lavável Macio",
+        "link": "https://vt.tiktok.com/ZS9DVaNWg9gfW-bFK0u/",
+        "image": "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/238e874f78094af6bc774ddd05f68688~tplv-aphluv4xwc-resize-webp:800:800.webp?dr=15582&t=555f072d&ps=933b5bde&shp=c940a200&shcp=9b759fb9&idc=my2&from=3376456192"
     }
 ]
 
-# ==============================================================================
-# 2.1 ROTAÇÃO BASEADA NO NÚMERO DE EXECUÇÃO DO GITHUB
-# ==============================================================================
-run_number = int(os.environ.get("GITHUB_RUN_NUMBER", random.randint(1, 1000)))
-indice_produto = (run_number - 1) % len(PRODUTOS)
-produto_do_dia = PRODUTOS[indice_produto]
+def generate_post_content(product):
+    title = f"Review e Oferta: {product['name']}"
+    
+    html_content = f"""
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <h2>{product['name']}</h2>
+        <div style="text-align: center; margin: 20px 0;">
+            <img src="{product['image']}" alt="{product['name']}" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+            <p style="font-size: 11px; color: #777; font-style: italic; margin-top: 5px;">* Imagem meramente ilustrativa.</p>
+        </div>
+        <p>Procurando por mais praticidade, conforto e organização para a sua casa? O <strong>{product['name']}</strong> é a escolha perfeita para transformar o seu ambiente com excelente custo-benefício.</p>
+        <p>Feito com materiais de alta qualidade, ele garante durabilidade e um toque especial de sofisticação para o seu dia a dia.</p>
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{product['link']}" target="_blank" style="background-color: #ff3b30; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 5px; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">🔥 Ver Oferta Especial no TikTok Shop</a>
+        </div>
+    </div>
+    """
+    return title, html_content
 
-PRODUTO_NOME = produto_do_dia["nome"]
-TIKTOK_SHOP_LINK = produto_do_dia["link"]
-URL_IMAGEM_ILUSTRATIVA = produto_do_dia["imagem_url"]
-
-print(f">>> Execução #{run_number} | Produto selecionado: {PRODUTO_NOME}", flush=True)
-print(f">>> Link Afiliado: {TIKTOK_SHOP_LINK}", flush=True)
-
-# ==============================================================================
-# 3. PROMPT DE GERAÇÃO
-# ==============================================================================
-prompt = f"""
-Crie um artigo completo de review para blog de achados de casa, cozinha e organização em formato HTML avaliando o produto '{PRODUTO_NOME}'.
-
-Instruções obrigatórias de estrutura HTML:
-1. Título principal chamativo em <h1> focado em praticidade para o lar, otimização de espaço e facilidade no dia a dia.
-2. Logo após o <h1>, insira obrigatoriamente a seguinte tag de imagem HTML com estilo centralizado e limpo:
-   <div style="text-align: center; margin: 20px 0;">
-     <img src="{URL_IMAGEM_ILUSTRATIVA}" alt="{PRODUTO_NOME}" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" />
-     <p style="font-size: 12px; color: #777777; margin-top: 6px; font-style: italic;">* Imagem meramente ilustrativa. Confira a foto e detalhes exatos do produto na página oficial do vendedor.</p>
-   </div>
-3. Introdução envolvente sobre como transformar a rotina doméstica e manter a casa organizada sem esforço.
-4. Seção 'Principais Benefícios e Praticidade no Dia a Dia' em lista <ul> com itens <li>.
-5. Seção 'Por Que Este Achadinho Está a Fazer Sucesso'.
-6. No final do artigo, insira o botão CTA HTML com o link de afiliado oficial:
-   <div style="text-align: center; margin: 35px 0;">
-     <a href="{TIKTOK_SHOP_LINK}" target="_blank" rel="sponsored nofollow" style="background-color: #ff0050; color: white; padding: 16px 32px; font-size: 18px; font-weight: bold; text-decoration: none; border-radius: 8px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
-       👉 VER OFERTA E COMPRAR NO TIKTOK SHOP
-     </a>
-   </div>
-
-Responda APENAS com o código HTML puro pronto para publicação, sem marcadores de código markdown (```html).
-"""
-
-# ==============================================================================
-# 3.1 GERADOR DE CONTEÚDO IA (FALLBACK MULTI-MODELO)
-# ==============================================================================
-modelos_disponiveis = [
-    'gemini-3.8-flash',
-    'gemini-3.7-flash',
-    'gemini-3.6-flash',
-    'gemini-3.5-flash',
-    'gemini-2.5-flash'
-]
-
-response = None
-
-for nome_modelo in modelos_disponiveis:
+def send_to_blogger():
+    product = random.choice(PRODUCTS)
+    title, html_content = generate_post_content(product)
+    
+    msg = MIMEMultipart()
+    msg['From'] = EMAIL_USER
+    msg['To'] = BLOGGER_EMAIL
+    msg['Subject'] = title
+    
+    msg.attach(MIMEText(html_content, 'html'))
+    
     try:
-        print(f">>> Tentando gerar artigo com o modelo: {nome_modelo}...", flush=True)
-        model = genai.GenerativeModel(nome_modelo)
-        response = model.generate_content(prompt)
-        print(f">>> Sucesso com o modelo: {nome_modelo}!", flush=True)
-        break
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(EMAIL_USER, EMAIL_PASS)
+        server.sendmail(EMAIL_USER, BLOGGER_EMAIL, msg.as_string())
+        server.quit()
+        print(f"Post publicado com sucesso: {title}")
     except Exception as e:
-        print(f">>> Modelo {nome_modelo} falhou ({e}). Tentando o próximo modelo...", flush=True)
-        time.sleep(5)
+        print(f"Erro ao publicar: {e}")
 
-if not response:
-    raise RuntimeError("ERRO: Todos os modelos do Gemini falharam ou atingiram a cota diária.")
-
-conteudo_html = response.text.replace("```html", "").replace("```", "").strip()
-
-# ==============================================================================
-# 4. DISPARO DE E-MAIL OTIMIZADO PARA O BLOGGER
-# ==============================================================================
-msg = MIMEMultipart('alternative')
-msg['From'] = GMAIL_USER
-msg['To'] = BLOGGER_EMAIL
-msg['Subject'] = f"Achados para Casa: {PRODUTO_NOME}"
-
-texto_limpo = re.sub('<[^<]+?>', '', conteudo_html)
-
-msg.attach(MIMEText(texto_limpo, 'plain', 'utf-8'))
-msg.attach(MIMEText(conteudo_html, 'html', 'utf-8'))
-
-print(f">>> Enviando e-mail formatado para publicação no Blogger ({BLOGGER_EMAIL})...", flush=True)
-try:
-    server = smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=30)
-    server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
-    server.sendmail(GMAIL_USER, BLOGGER_EMAIL, msg.as_string())
-    server.close()
-    print(f">>> SUCESSO! Post enviado para o Blogger!", flush=True)
-except Exception as e:
-    print(f">>> ERRO ao enviar e-mail: {e}", flush=True)
-    raise e
+if __name__ == "__main__":
+    send_to_blogger()
