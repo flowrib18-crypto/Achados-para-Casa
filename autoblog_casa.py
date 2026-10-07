@@ -173,7 +173,7 @@ for nome_modelo in modelos_disponiveis:
         print(f">>> Sucesso com o modelo: {nome_modelo}!", flush=True)
         break
     except Exception as e:
-        print(f">>> Modelo {nome_modelo} falhou ({e}). Tentando o próximo modelo...", flush=Thread if 'Thread' in globals() else str(e)), flush=True)
+        print(f">>> Modelo {nome_modelo} falhou ({e}). Tentando o próximo modelo...", flush=True)
         time.sleep(5)
 
 if not response:
