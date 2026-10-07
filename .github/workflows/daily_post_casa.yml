@@ -25,7 +25,7 @@ jobs:
       - name: Executar script de postagem de casa
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GMAIL_USER: 'seu_email_real@gmail.com'
+          GMAIL_USER: 'comercebem@gmail.com'
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           BLOGGER_EMAIL: ${{ secrets.BLOGGER_EMAIL }}
         run: |
