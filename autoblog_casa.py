@@ -23,48 +23,48 @@ print(">>> Configurando API do Gemini...", flush=True)
 genai.configure(api_key=GEMINI_API_KEY)
 
 # ==============================================================================
-# 2. CATÁLOGO REAL DE PRODUTOS DE CASA, COZINHA E ORGANIZAÇÃO
+# 2. CATÁLOGO REAL DE PRODUTOS DE CASA, COZINHA E ORGANIZAÇÃO (COM IMAGENS CORRIGIDAS)
 # ==============================================================================
 PRODUTOS = [
     {
         "nome": "Kit Panos Multiuso Microfibra Gigante 60x80 Limpa Tudo Super Absorvente",
         "link": "https://vt.tiktok.com/ZS9DVa3EApja1-nfVbk/",
-        "imagem_url": "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1563453392212-326f5e854473?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Mini Ar Condicionado Climatizador Umidificador Ventilador Água Com LED Portátil",
         "link": "https://vt.tiktok.com/ZS9DVaKJ1umxE-UHx9W/",
-        "imagem_url": "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Escorredor de Louças Pratos 13 Pratos 2 Andares com Porta Talher Modelo Premium",
         "link": "https://vt.tiktok.com/ZS9DVaKwB15qr-TEaTI/",
-        "imagem_url": "https://images.unsplash.com/photo-1588854337236-6889d631faa8?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Câmera Lâmpada Wi-Fi IP Inteligente 8177QJ Branca Segurança 1080p Full HD Pix-Link",
         "link": "https://vt.tiktok.com/ZS9DVmeakMLJH-8DAf9/",
-        "imagem_url": "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Escova de Limpeza Elétrica Ajustável para Janela, Banheiro e Cozinha 9 em 1 Recarregável",
         "link": "https://vt.tiktok.com/ZS9DVmJW3UMxg-1X2J5/",
-        "imagem_url": "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Jogo Toalha de Banho Super Luxo 4Pçs 100% Algodão Alta Absorção",
         "link": "https://vt.tiktok.com/ZS9DVme6ftpPw-mv1pz/",
-        "imagem_url": "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Kit até 30 Marmitas Potes 800ml com Travas Laterais Colorido BPA FREE",
         "link": "https://vt.tiktok.com/ZS9DVmNxuKAVr-oyWt7/",
-        "imagem_url": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Mop Giratório 14 Litros Esfregão 360 Balde Inox com Cabo Ajustável",
         "link": "https://vt.tiktok.com/ZS9DVmFYNCQMH-LghoN/",
-        "imagem_url": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Varal de Chão 3 Andares Dobrável com Abas para Roupas",
@@ -79,7 +79,7 @@ PRODUTOS = [
     {
         "nome": "Cortador de Legumes 16 em 1 Multifuncional com 8 Lâminas Ajustáveis",
         "link": "https://vt.tiktok.com/ZS9DVmMhpQGtP-U7HVG/",
-        "imagem_url": "https://images.unsplash.com/photo-1590779035900-3ef5e9f5b35c?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Escova de Limpeza Elétrica Ajustável 9 em 1 Recarregável (Versão 2)",
@@ -89,7 +89,7 @@ PRODUTOS = [
     {
         "nome": "Protetor de Colchão Casal com Manta Impermeável Ultrassônico e Elástico",
         "link": "https://vt.tiktok.com/ZS9DVmBAFxN8R-K7mOX/",
-        "imagem_url": "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Percarbonato de Sódio 100% Puro Ativo Auto Flocante Tira Manchas Roupas Brancas",
@@ -99,7 +99,7 @@ PRODUTOS = [
     {
         "nome": "Kit 5 Lençóis QUEEN Estampados Avulsos com Elástico",
         "link": "https://vt.tiktok.com/ZS9DVmSaMgcv9-PZJbS/",
-        "imagem_url": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80"
+        "imagem_url": "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80"
     },
     {
         "nome": "Coberdrom Casal Queen Size Sherpa Cobertor Edredom de Inverno Pele de Carneiro",
