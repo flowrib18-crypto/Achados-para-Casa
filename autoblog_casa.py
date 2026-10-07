@@ -8,19 +8,17 @@ import sys
 # Configurações de Email (Brevo SMTP)
 SMTP_SERVER = "smtp-relay.brevo.com"
 SMTP_PORT = 465
-EMAIL_USER = os.environ.get("BLOG_EMAIL_USER")
-EMAIL_PASS = os.environ.get("BLOG_EMAIL_PASS")
+SMTP_USER = os.environ.get("BLOG_EMAIL_USER")       # Login SMTP técnico do Brevo
+SMTP_PASS = os.environ.get("BLOG_EMAIL_PASS")       # Chave SMTP do Brevo
 BLOGGER_EMAIL = os.environ.get("BLOGGER_PUBLISH_EMAIL")
+VERIFIED_SENDER = "comercebem@gmail.com"            # O seu email verificado no Brevo
 
 # Validação prévia dos segredos do GitHub
-if not EMAIL_USER or not EMAIL_PASS or not BLOGGER_EMAIL:
+if not SMTP_USER or not SMTP_PASS or not BLOGGER_EMAIL:
     print("❌ ERRO: Segredos do GitHub em falta!")
-    print(f"   - BLOG_EMAIL_USER: {'OK' if EMAIL_USER else 'FALTANDO'}")
-    print(f"   - BLOG_EMAIL_PASS: {'OK' if EMAIL_PASS else 'FALTANDO'}")
-    print(f"   - BLOGGER_PUBLISH_EMAIL: {'OK' if BLOGGER_EMAIL else 'FALTANDO'}")
     sys.exit(1)
 
-# Catálogo Completo - Nicho: Casa, Cozinha e Organização (7 Produtos)
+# Catálogo Completo - Nicho: Casa, Cozinha e Organização
 PRODUCTS = [
     {
         "name": "Luminária De Mesa Cabeceira Touch",
@@ -82,15 +80,15 @@ def send_to_blogger():
     title, html_content = generate_post_content(product)
     
     msg = MIMEMultipart()
-    msg['From'] = EMAIL_USER
+    msg['From'] = VERIFIED_SENDER  # Usa o email verificado no Brevo
     msg['To'] = BLOGGER_EMAIL
     msg['Subject'] = title
     msg.attach(MIMEText(html_content, 'html'))
     
     try:
         server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
-        server.login(EMAIL_USER, EMAIL_PASS)
-        server.sendmail(EMAIL_USER, BLOGGER_EMAIL, msg.as_string())
+        server.login(SMTP_USER, SMTP_PASS)  # Autentica com o login técnico do Brevo
+        server.sendmail(VERIFIED_SENDER, BLOGGER_EMAIL, msg.as_string())
         server.quit()
         print(f"Post publicado com sucesso: {title}")
     except Exception as e:
