@@ -7,6 +7,7 @@ import random
 import sys
 import time
 import urllib.parse
+from datetime import datetime
 from google import genai
 
 # Configurações de Email (SMTP Direto do Gmail)
@@ -59,6 +60,9 @@ def generate_html_from_gemini(prompt):
                 return None
 
 def create_post():
+    # Obter data e hora atual para garantir títulos únicos (evita bloqueio de spam do Blogger)
+    data_hora_atual = datetime.now().strftime("%d/%m/%Y %H:%M")
+    
     # Sorteia entre: 50% Produto Afiliado, 50% Tendência / Assunto em Alta do Momento
     post_type = random.choices(['product', 'trend'], weights=[50, 50], k=1)[0]
     
@@ -83,7 +87,7 @@ def create_post():
         if not body_html:
             body_html = f"<h2>{product['name']}</h2><p>Descubra todos os detalhes e benefícios deste excelente produto pensado para facilitar o seu dia a dia em casa, otimizando o seu tempo e trazendo muito mais praticidade para o seu lar.</p><p>Com um design moderno e funcional, ele destaca-se pela excelente durabilidade e facilidade de utilização, tornando-se num verdadeiro aliado nas tarefas domésticas.</p>"
             
-        title = f"Review e Análise Completa: {product['name']} Vale a Pena?"
+        title = f"Review e Análise Completa: {product['name']} Vale a Pena? [{data_hora_atual}]"
         
         html_content = f"""
         <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto;">
@@ -114,7 +118,7 @@ def create_post():
         if not body_html:
             body_html = "<h2>Tendências para Organizar a Casa</h2><p>Descubra as novidades que estão a transformar os lares modernos, trazendo mais harmonia, otimização de espaço e praticidade para o seu dia a dia com dicas simples e eficazes.</p><p>As redes sociais estão cheias de inspirações que provam que pequenas mudanças na organização fazem toda a diferença no bem-estar da família.</p>"
             
-        title = "Tendências de Organização e Decoração Que Estão a Marcar Este Mês"
+        title = f"Tendências de Organização e Decoração Que Estão a Marcar Este Mês [{data_hora_atual}]"
         
         random_product = random.choice(PRODUCTS)
         general_link = random_product["link"]
