@@ -6,13 +6,12 @@ import random
 import sys
 import google.generativeai as genai
 
-# Configurações de Email (Brevo SMTP)
-SMTP_SERVER = "smtp-relay.brevo.com"
+# Configurações de Email (Gmail SMTP Direto para evitar rejeição no Blogger)
+SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 465
-SMTP_USER = os.environ.get("BLOG_EMAIL_USER")
-SMTP_PASS = os.environ.get("BLOG_EMAIL_PASS")
+SMTP_USER = os.environ.get("BLOG_EMAIL_USER")       # O seu email do Gmail
+SMTP_PASS = os.environ.get("BLOG_EMAIL_PASS")       # A Senha de App de 16 dígitos
 BLOGGER_EMAIL = os.environ.get("BLOGGER_PUBLISH_EMAIL")
-VERIFIED_SENDER = "comercebem@gmail.com"
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
 if not SMTP_USER or not SMTP_PASS or not BLOGGER_EMAIL or not GEMINI_API_KEY:
@@ -71,11 +70,10 @@ def generate_seo_article_with_gemini(product_name):
     2. Seções detalhadas sobre as principais vantagens, design, utilidade e custo-benefício.
     3. Uma seção de Perguntas Frequentes (FAQ) com 2 perguntas e respostas úteis.
     
-    Retorne APENAS o código HTML puro do corpo do artigo, sem formatações markdown nas pontas.
+    Retorne APENAS o código HTML puro do corpo do artigo.
     """
     
     try:
-        # Usando o modelo genérico gemini-pro que é amplamente suportado na API antiga
         model = genai.GenerativeModel("gemini-pro")
         response = model.generate_content(prompt)
         text = response.text.strip()
@@ -85,7 +83,7 @@ def generate_seo_article_with_gemini(product_name):
             text = text[:-3]
         return text.strip()
     except Exception as e:
-        print(f"Aviso do Gemini: {e}. Usando estrutura padrão de segurança.")
+        print(f"Aviso do Gemini: {e}. Usando estrutura padrão.")
         return f"""
         <h2>Tudo o que precisa saber sobre {product_name}</h2>
         <p>Procurando por mais praticidade, conforto e organização para o seu lar? O <strong>{product_name}</strong> chegou para transformar a rotina da sua casa com excelente custo-benefício.</p>
@@ -96,9 +94,6 @@ def generate_seo_article_with_gemini(product_name):
             <li>Praticidade e facilidade de uso incomparáveis.</li>
             <li>Excelente durabilidade para uso contínuo.</li>
         </ul>
-        <h3>Perguntas Frequentes</h3>
-        <p><strong>O produto é resistente?</strong> Sim, fabricado com padrões rigorosos de qualidade.</p>
-        <p><strong>Como adquirir?</strong> Basta clicar no link oficial da oferta abaixo.</p>
         """
 
 def send_to_blogger():
@@ -122,7 +117,7 @@ def send_to_blogger():
     """
     
     msg = MIMEMultipart()
-    msg['From'] = VERIFIED_SENDER
+    msg['From'] = SMTP_USER
     msg['To'] = BLOGGER_EMAIL
     msg['Subject'] = title
     msg.attach(MIMEText(html_content, 'html', 'utf-8'))
@@ -130,9 +125,9 @@ def send_to_blogger():
     try:
         server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
         server.login(SMTP_USER, SMTP_PASS)
-        server.sendmail(VERIFIED_SENDER, BLOGGER_EMAIL, msg.as_string())
+        server.sendmail(SMTP_USER, BLOGGER_EMAIL, msg.as_string())
         server.quit()
-        print(f"Post gerado e publicado com sucesso: {title}")
+        print(f"Post gerado via IA e publicado com sucesso no Blogger: {title}")
     except Exception as e:
         print(f"Erro ao publicar: {e}")
         sys.exit(1)
