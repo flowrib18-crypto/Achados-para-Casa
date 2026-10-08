@@ -1,4 +1,5 @@
 import os
+import json
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -21,34 +22,14 @@ if not SMTP_USER or not SMTP_PASS or not BLOGGER_EMAIL or not GEMINI_API_KEY:
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-# Catálogo de Produtos Afiliados
-PRODUCTS = [
-    {
-        "name": "Luminária De Mesa Cabeceira Touch",
-        "link": "https://vt.tiktok.com/...", 
-        "image": "https://p16-oec-va.ibyteimg.com/tos-maliva-i-o3syd03w52-us/c5520bca5460470989f3c10b38a8b820~tplv-o3syd03w52-resize-webp:800:800.webp?dr=15584&t=555f072d&ps=933b5bde&shp=c940a200&shcp=9b759fb9&idc=my2&from=3376456192"
-    },
-    {
-        "name": "Lençol Com Babado Helena 3 Peças 400 Fios Toque de Algodão",
-        "link": "https://vt.tiktok.com/ZS9DV5KvJfUY6-87jXx/",
-        "image": "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/e80c2735205f48908a13bee29309f6b0~tplv-aphluv4xwc-resize-webp:800:800.webp?dr=15582&t=555f072d&ps=933b5bde&shp=c940a200&shcp=9b759fb9&idc=my2&from=3376456192"
-    },
-    {
-        "name": "Colcha Lençol Casal Queen Helena 3 Peças Com Bababo Luxo Conforto Live",
-        "link": "https://vt.tiktok.com/ZS9DVaJFXMusA-y6nOC/",
-        "image": "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/a20c88283bac41c08e9f38c714423dc5~tplv-aphluv4xwc-resize-webp:800:800.webp?dr=15582&t=555f072d&ps=933b5bde&shp=c940a200&shcp=9b759fb9&idc=my2&from=3376456192"
-    },
-    {
-        "name": "Kit Jogo de Lençol Micropercal Tecido 400 Fios Lindas Fronhas Estampadas Com Zíper",
-        "link": "https://vt.tiktok.com/ZS9DVaeAceBA8-r2PBP/",
-        "image": "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/0dfc825bb0984a4cb765eb15611d5794~tplv-aphluv4xwc-resize-webp:800:800.webp?dr=15582&t=555f072d&ps=933b5bde&shp=c940a200&shcp=9b759fb9&idc=my2&from=3376456192"
-    },
-    {
-        "name": "Torneira Cozinha Parede Preta Flexível Duplo Jato Cone 1/4 de Volta para Mesa Pia Bancada e Mármore",
-        "link": "https://vt.tiktok.com/ZS9DVaNWaY39r-rmWt5/",
-        "image": "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/8f8e03dd9f1147c0a33ac4e6e4d098a1~tplv-aphluv4xwc-resize-webp:800:800.webp?dr=15582&t=555f072d&ps=933b5bde&shp=c940a200&shcp=9b759fb9&idc=my2&from=3376456192"
-    }
-]
+# Carregar o Catálogo de Produtos Afiliados dinamicamente do ficheiro JSON
+try:
+    with open("produtos.json", "r", encoding="utf-8") as f:
+        PRODUCTS = json.load(f)
+    print(f"📦 Catálogo carregado com sucesso: {len(PRODUCTS)} produtos disponíveis.")
+except Exception as e:
+    print(f"❌ Erro ao carregar o ficheiro produtos.json: {e}")
+    sys.exit(1)
 
 def generate_html_from_gemini(prompt):
     max_retries = 3
@@ -130,8 +111,10 @@ def create_post():
             
         title = "Tendências de Organização e Decoração Que Estão a Marcar Este Mês"
         
-        general_link = PRODUCTS[0]["link"]
-        general_image = PRODUCTS[0]["image"]
+        # Sorteia um produto aleatório para acompanhar o post de tendência em vez de usar sempre o primeiro
+        random_product = random.choice(PRODUCTS)
+        general_link = random_product["link"]
+        general_image = random_product["image"]
         
         html_content = f"""
         <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto;">
