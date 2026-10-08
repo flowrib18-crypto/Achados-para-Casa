@@ -66,7 +66,7 @@ def generate_seo_article_with_gemini(product_name):
     
     try:
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model='gemini-3.8-flash',
             contents=prompt,
         )
         text = response.text.strip()
