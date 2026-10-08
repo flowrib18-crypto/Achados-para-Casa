@@ -4,6 +4,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import random
 import sys
+import time
 from google import genai
 
 # Configurações de Email (SMTP Direto do Gmail)
@@ -50,22 +51,30 @@ PRODUCTS = [
 ]
 
 def generate_html_from_gemini(prompt):
-    try:
-        response = client.models.generate_content(
-            model='gemini-3.8-flash',
-            contents=prompt,
-        )
-        text = response.text.strip()
-        if text.startswith("```html"):
-            text = text[7:]
-        if text.startswith("```"):
-            text = text[3:]
-        if text.endswith("```"):
-            text = text[:-3]
-        return text.strip()
-    except Exception as e:
-        print(f"⚠️ Erro ao comunicar com o Gemini: {e}")
-        return None
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            response = client.models.generate_content(
+                model='gemini-3.8-flash',
+                contents=prompt,
+            )
+            text = response.text.strip()
+            if text.startswith("```html"):
+                text = text[7:]
+            if text.startswith("```"):
+                text = text[3:]
+            if text.endswith("```"):
+                text = text[:-3]
+            print("✅ Artigo gerado com sucesso pela Inteligência Artificial!")
+            return text.strip()
+        except Exception as e:
+            print(f"⚠️ Tentativa {attempt + 1} falhou (Erro: {e})")
+            if attempt < max_retries - 1:
+                print("🔄 A aguardar 5 segundos para tentar novamente...")
+                time.sleep(5)
+            else:
+                print("❌ Esgotadas as tentativas com o Gemini.")
+                return None
 
 def create_post():
     # Sorteia entre: 50% Produto Afiliado, 50% Tendência / Assunto em Alta do Momento
