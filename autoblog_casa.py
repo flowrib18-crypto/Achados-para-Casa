@@ -1,25 +1,19 @@
 import os
 import json
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 import random
 import sys
 import time
 import urllib.parse
 from datetime import datetime
+import requests
 from google import genai
 
-# Configurações de Email (SMTP Direto do Gmail)
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 465
-SMTP_USER = os.environ.get("BLOG_EMAIL_USER")
-SMTP_PASS = os.environ.get("BLOG_EMAIL_PASS")
-BLOGGER_EMAIL = os.environ.get("BLOGGER_PUBLISH_EMAIL")
+# Configurações da API do Google e Web App do Blogger
+WEB_APP_URL = os.environ.get("BLOGGER_WEB_APP_URL")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
-if not SMTP_USER or not SMTP_PASS or not BLOGGER_EMAIL or not GEMINI_API_KEY:
-    print("❌ ERRO: Segredos do GitHub em falta!")
+if not WEB_APP_URL or not GEMINI_API_KEY:
+    print("❌ ERRO: Segredos do GitHub em falta (BLOGGER_WEB_APP_URL ou GEMINI_API_KEY)!")
     sys.exit(1)
 
 client = genai.Client(api_key=GEMINI_API_KEY)
@@ -60,7 +54,6 @@ def generate_html_from_gemini(prompt):
                 return None
 
 def create_post():
-    # Obter data e hora atual para garantir títulos únicos (evita bloqueio de spam do Blogger)
     data_hora_atual = datetime.now().strftime("%d/%m/%Y %H:%M")
     
     # Sorteia entre: 50% Produto Afiliado, 50% Tendência / Assunto em Alta do Momento
@@ -70,7 +63,6 @@ def create_post():
         product = random.choice(PRODUCTS)
         print(f"📦 Modo Produto Selecionado: {product['name']}")
         
-        # Gerar imagem genérica automática baseada no nome do produto
         termo_url = urllib.parse.quote(f"modern home appliance {product['name']} product photography clean background")
         imagem_gerada_ia = f"[https://image.pollinations.ai/prompt/](https://image.pollinations.ai/prompt/){termo_url}"
         
@@ -123,7 +115,6 @@ def create_post():
         random_product = random.choice(PRODUCTS)
         general_link = random_product["link"]
         
-        # Gerar imagem genérica para o modo tendência
         termo_url = urllib.parse.quote("modern home organization interior design clean background")
         imagem_gerada_ia = f"[https://image.pollinations.ai/prompt/](https://image.pollinations.ai/prompt/){termo_url}"
         
@@ -140,20 +131,22 @@ def create_post():
         </div>
         """
 
-    msg = MIMEMultipart()
-    msg['From'] = SMTP_USER
-    msg['To'] = BLOGGER_EMAIL
-    msg['Subject'] = title
-    msg.attach(MIMEText(html_content, 'html', 'utf-8'))
+    # Enviar post diretamente para o Web App do Blogger via API HTTP
+    payload = {
+        "title": title,
+        "content": html_content
+    }
     
     try:
-        server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
-        server.login(SMTP_USER, SMTP_PASS)
-        server.sendmail(SMTP_USER, BLOGGER_EMAIL, msg.as_string())
-        server.quit()
-        print(f"✅ Publicado com sucesso no Blogger: {title}")
+        response = requests.post(WEB_APP_URL, json=payload)
+        res_data = response.json()
+        if response.status_code == 200 and res_data.get("status") == "success":
+            print(f"✅ Publicado com sucesso no Blogger via API: {title}")
+        else:
+            print(f"❌ Erro retornado pela API do Blogger: {res_data}")
+            sys.exit(1)
     except Exception as e:
-        print(f"❌ Erro ao enviar email SMTP: {e}")
+        print(f"❌ Erro de comunicação com o Web App: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":
