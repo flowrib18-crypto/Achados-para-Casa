@@ -6,6 +6,7 @@ from email.mime.text import MIMEText
 import random
 import sys
 import time
+import urllib.parse
 from google import genai
 
 # Configurações de Email (SMTP Direto do Gmail)
@@ -65,6 +66,10 @@ def create_post():
         product = random.choice(PRODUCTS)
         print(f"📦 Modo Produto Selecionado: {product['name']}")
         
+        # Gerar imagem genérica automática baseada no nome do produto
+        termo_url = urllib.parse.quote(f"modern home appliance {product['name']} product photography clean background")
+        imagem_gerada_ia = f"[https://image.pollinations.ai/prompt/](https://image.pollinations.ai/prompt/){termo_url}"
+        
         prompt = f"""
         Atua como especialista em SEO e Redação Web. Escreve um artigo de blog original e otimizado (400-500 palavras) em Português do Brasil sobre o produto: "{product['name']}".
         Estrutura em HTML limpo (tags `<h2>`, `<h3>`, `<p>`, `<ul>`, `<li>`, `<strong>`):
@@ -84,7 +89,7 @@ def create_post():
         <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto;">
             {body_html}
             <div style="text-align: center; margin: 30px 0;">
-                <img src="{product['image']}" alt="{product['name']}" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+                <img src="{imagem_gerada_ia}" alt="{product['name']}" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
                 <p style="font-size: 11px; color: #777; font-style: italic; margin-top: 8px;">* Imagem meramente ilustrativa.</p>
             </div>
             <div style="text-align: center; margin: 35px 0;">
@@ -111,16 +116,18 @@ def create_post():
             
         title = "Tendências de Organização e Decoração Que Estão a Marcar Este Mês"
         
-        # Sorteia um produto aleatório para acompanhar o post de tendência em vez de usar sempre o primeiro
         random_product = random.choice(PRODUCTS)
         general_link = random_product["link"]
-        general_image = random_product["image"]
+        
+        # Gerar imagem genérica para o modo tendência
+        termo_url = urllib.parse.quote("modern home organization interior design clean background")
+        imagem_gerada_ia = f"[https://image.pollinations.ai/prompt/](https://image.pollinations.ai/prompt/){termo_url}"
         
         html_content = f"""
         <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto;">
             {body_html}
             <div style="text-align: center; margin: 30px 0;">
-                <img src="{general_image}" alt="Tendências para Casa" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+                <img src="{imagem_gerada_ia}" alt="Tendências para Casa" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
                 <p style="font-size: 11px; color: #777; font-style: italic; margin-top: 8px;">* Imagem meramente ilustrativa.</p>
             </div>
             <div style="text-align: center; margin: 35px 0;">
