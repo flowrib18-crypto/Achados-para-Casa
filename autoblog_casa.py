@@ -33,7 +33,7 @@ except Exception as e:
     sys.exit(1)
 
 def generate_html_from_gemini(prompt):
-    max_retries = 3
+    max_retries = 5
     for attempt in range(max_retries):
         try:
             response = client.models.generate_content(
@@ -52,8 +52,8 @@ def generate_html_from_gemini(prompt):
         except Exception as e:
             print(f"⚠️ Tentativa {attempt + 1} falhou (Erro: {e})")
             if attempt < max_retries - 1:
-                print("🔄 A aguardar 5 segundos para tentar novamente...")
-                time.sleep(5)
+                print("🔄 A aguardar 10 segundos para tentar novamente...")
+                time.sleep(10)
             else:
                 print("❌ Esgotadas as tentativas com o Gemini.")
                 return None
@@ -81,7 +81,7 @@ def create_post():
         """
         body_html = generate_html_from_gemini(prompt)
         if not body_html:
-            body_html = f"<h2>{product['name']}</h2><p>Destaque imperdível para a sua casa.</p>"
+            body_html = f"<h2>{product['name']}</h2><p>Descubra todos os detalhes e benefícios deste excelente produto pensado para facilitar o seu dia a dia em casa, otimizando o seu tempo e trazendo muito mais praticidade para o seu lar.</p><p>Com um design moderno e funcional, ele destaca-se pela excelente durabilidade e facilidade de utilização, tornando-se num verdadeiro aliado nas tarefas domésticas.</p>"
             
         title = f"Review e Análise Completa: {product['name']} Vale a Pena?"
         
@@ -112,7 +112,7 @@ def create_post():
         """
         body_html = generate_html_from_gemini(prompt)
         if not body_html:
-            body_html = "<h2>Tendências para Organizar a Casa</h2><p>Descubra as novidades que estão a transformar os lares.</p>"
+            body_html = "<h2>Tendências para Organizar a Casa</h2><p>Descubra as novidades que estão a transformar os lares modernos, trazendo mais harmonia, otimização de espaço e praticidade para o seu dia a dia com dicas simples e eficazes.</p><p>As redes sociais estão cheias de inspirações que provam que pequenas mudanças na organização fazem toda a diferença no bem-estar da família.</p>"
             
         title = "Tendências de Organização e Decoração Que Estão a Marcar Este Mês"
         
