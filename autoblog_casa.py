@@ -4,7 +4,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import random
 import sys
-import google.generativeai as genai
+from google import genai
 
 # Configurações de Email (SMTP Direto do Gmail)
 SMTP_SERVER = "smtp.gmail.com"
@@ -18,8 +18,8 @@ if not SMTP_USER or not SMTP_PASS or not BLOGGER_EMAIL or not GEMINI_API_KEY:
     print("❌ ERRO: Segredos do GitHub em falta!")
     sys.exit(1)
 
-# Configurar o Gemini
-genai.configure(api_key=GEMINI_API_KEY)
+# Configurar o Cliente Gemini com a nova biblioteca oficial
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 # Catálogo - Nicho: Casa, Cozinha e Organização
 PRODUCTS = [
@@ -65,12 +65,12 @@ def generate_seo_article_with_gemini(product_name):
     """
     
     try:
-        # Usando o modelo atualizado gemini-1.5-flash para máxima compatibilidade e inteligência
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt,
+        )
         text = response.text.strip()
         
-        # Limpeza de eventuais marcações markdown de código
         if text.startswith("```html"):
             text = text[7:]
         if text.startswith("```"):
@@ -82,7 +82,6 @@ def generate_seo_article_with_gemini(product_name):
         return text.strip()
     except Exception as e:
         print(f"⚠️ Erro detalhado ao comunicar com o Gemini: {e}")
-        # Se ocorrer erro, geramos um texto um pouco mais completo para fallback
         return f"""
         <h2>Tudo o que precisa saber sobre {product_name}</h2>
         <p>Procurando por mais praticidade, conforto e organização para o seu lar? O <strong>{product_name}</strong> chegou para revolucionar a rotina da sua casa, combinando alta tecnologia, design sofisticado e um preço imperdível.</p>
